@@ -6,7 +6,11 @@ export default function Form(){
         category:"",
         notes:"",
         date:""
-    })
+    });
+
+    const [errors, setErrors] = React.useState({});
+
+
 
    
 
@@ -22,9 +26,28 @@ export default function Form(){
 
     function handleSubmit(event){
         event.preventDefault()
+
+        setErrors(validateForm(formData))
          console.log(formData)
     }
 
+    function validateForm(data){
+        const errors = {};
+
+        if(!data.expense.trim()){
+            errors.expense = "Expense is required";
+        }
+        
+        if(!data.category.trim()){
+            errors.category = "Select a category";
+        }
+
+        if(!data.date.trim()){
+            errors.date = "Date is required";
+        }
+
+        return errors;
+    }
     
     return(
         <form onSubmit={handleSubmit}>
@@ -34,6 +57,7 @@ export default function Form(){
                     name="expense"
                     value={formData.expense}
                     onChange={handleChange} />
+            <div>{errors.expense}</div>
             <br />
 
             <label htmlFor="category">Category</label>
@@ -42,9 +66,11 @@ export default function Form(){
                 name="category"
                 value={formData.category}
                 onChange={handleChange}>
+                <option value="">Choose option</option>
                 <option value="transportation">Transportation</option>
                 <option value="restaurants">Restaurants</option>
             </select>
+            <div>{errors.category}</div>
             <br/>
 
             <label htmlFor="notes">Notes</label>
@@ -62,8 +88,8 @@ export default function Form(){
                 name="date"
                 value={formData.date}
                 onChange={handleChange}/>
+            <div>{errors.date}</div>            
             <br/>
-
             <button>Submit</button>
 
         </form>
