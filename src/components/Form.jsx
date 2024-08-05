@@ -10,6 +10,21 @@ export default function Form(){
 
     const [errors, setErrors] = React.useState({});
 
+    const[items, setItems] = React.useState([]);
+
+    React.useEffect(()=>{
+        //load item into local when component mounts
+        const savedItems = JSON.parse(localStorage.getItem('items'));
+        if(items){
+            setItems(items)
+        }
+    }, []);
+
+    React.useEffect(()=>{
+        //update local with new item when item changes
+        localStorage.setItem('items', JSON.stringify(items))
+    }, [items]);
+
 
 
    
@@ -28,7 +43,8 @@ export default function Form(){
         event.preventDefault()
 
         setErrors(validateForm(formData))
-         console.log(formData)
+        console.log(formData)
+        setItems(prevItems=>[...prevItems, formData])
     }
 
     function validateForm(data){
