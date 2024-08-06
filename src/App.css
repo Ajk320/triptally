@@ -20,7 +20,7 @@ input, select, textarea {
   border-radius: 4px;
 }
 
-button {
+.form--submit {
   width: 100%;
   padding: 10px;
   background-color: #28a745;
@@ -30,7 +30,7 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+.form--submit:hover {
   background-color: #218838;
 }
 

@@ -15,16 +15,10 @@ export default function Form(){
     React.useEffect(()=>{
         //load item into local when component mounts
         const savedItems = JSON.parse(localStorage.getItem('items'));
-        if(items){
-            setItems(items)
+        if(savedItems){
+            setItems(savedItems)
         }
     }, []);
-
-    React.useEffect(()=>{
-        //update local with new item when item changes
-        localStorage.setItem('items', JSON.stringify(items))
-    }, [items]);
-
 
 
    
@@ -44,7 +38,9 @@ export default function Form(){
 
         setErrors(validateForm(formData))
         console.log(formData)
-        setItems(prevItems=>[...prevItems, formData])
+        const newItems = [...items, formData]
+        setItems(newItems)
+        localStorage.setItem('items', JSON.stringify(newItems))
     }
 
     function validateForm(data){
@@ -106,7 +102,7 @@ export default function Form(){
                 onChange={handleChange}/>
             <div>{errors.date}</div>            
             <br/>
-            <button>Submit</button>
+            <button className="form--submit">Submit</button>
 
         </form>
     )

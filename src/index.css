@@ -1,5 +1,33 @@
-form{
+html, body {
+    height: 100vh;
+    margin: 0;
+    font-family: 'Monteserrat', sans-serif;
+  }
+
+  .container{
+    height: 100%;
+  }
+  
+  .main-content{
     display: flex;
     flex-direction: column;
     align-items: center;
-}
+    justify-content: center;
+    height: 90vh;
+    width: 100vw;
+  }
+  
+  .add-expense-button{
+    background-color: #04AA6D;
+    border: none;
+    color:white;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 2rem;
+    width:80px;
+    height:80px;
+    border-radius: 50%;
+    
+  }
