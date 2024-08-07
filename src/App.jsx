@@ -3,6 +3,7 @@ import Main from "./components/Main"
 import Form from './components/Form'
 
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
+import ExpenseList from './components/ExpenseList'
 
 const router = createBrowserRouter([
   {
@@ -12,7 +13,12 @@ const router = createBrowserRouter([
   {
     path:"/form",
     element:<Form/>
+  },
+  {
+    path:"/expenses",
+    element:<ExpenseList/>
   }
+  
 ])
 
 function App() {

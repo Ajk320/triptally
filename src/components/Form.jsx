@@ -1,5 +1,6 @@
 import React from "react"
 import Navbar from "./Navbar";
+import { useNavigate } from "react-router-dom";
 
 export default function Form(){
     const [formData, setFormData] = React.useState({
@@ -12,6 +13,8 @@ export default function Form(){
     const [errors, setErrors] = React.useState({});
 
     const[items, setItems] = React.useState([]);
+
+    const navigate = useNavigate();
 
     React.useEffect(()=>{
         //load item into local when component mounts
@@ -41,7 +44,9 @@ export default function Form(){
         console.log(formData)
         const newItems = [...items, formData]
         setItems(newItems)
-        localStorage.setItem('items', JSON.stringify(newItems))
+        localStorage.setItem('items', JSON.stringify(newItems));
+        navigate("/expenses")
+
     }
 
     function validateForm(data){
