@@ -8,7 +8,9 @@ export default function Modal({open}){
 
     return(
         <div>
-            <Form/>
+            <div className='overlay'>
+                <Form/>
+            </div>
         </div>
     )
 }

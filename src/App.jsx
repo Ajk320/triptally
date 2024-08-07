@@ -1,14 +1,24 @@
 import './App.css'
 import Main from "./components/Main"
-import Navbar from "./components/Navbar"
+import Form from './components/Form'
+
+import {createBrowserRouter, RouterProvider} from 'react-router-dom'
+
+const router = createBrowserRouter([
+  {
+    path:"/",
+    element: <Main />
+  },
+  {
+    path:"/form",
+    element:<Form/>
+  }
+])
 
 function App() {
 
   return (
-    <div className = "container">
-      <Navbar/>
-      <Main/>
-    </div>
+    <RouterProvider router={router}/>
   )
 }
 

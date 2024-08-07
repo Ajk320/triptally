@@ -1,4 +1,5 @@
 import React from "react"
+import Navbar from "./Navbar";
 
 export default function Form(){
     const [formData, setFormData] = React.useState({
@@ -62,48 +63,51 @@ export default function Form(){
     }
     
     return(
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="expense">Expense</label>
-            <input type="number"
-                    id="expense"
-                    name="expense"
-                    value={formData.expense}
-                    onChange={handleChange} />
-            <div>{errors.expense}</div>
-            <br />
+        <>
+            <Navbar/>
+            <form onSubmit={handleSubmit}>
+                <label htmlFor="expense">Expense</label>
+                <input type="number"
+                        id="expense"
+                        name="expense"
+                        value={formData.expense}
+                        onChange={handleChange} />
+                <div>{errors.expense}</div>
+                <br />
 
-            <label htmlFor="category">Category</label>
-            <select 
-                id="category"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}>
-                <option value="">Choose option</option>
-                <option value="transportation">Transportation</option>
-                <option value="restaurants">Restaurants</option>
-            </select>
-            <div>{errors.category}</div>
-            <br/>
+                <label htmlFor="category">Category</label>
+                <select 
+                    id="category"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}>
+                    <option value="">Choose option</option>
+                    <option value="transportation">Transportation</option>
+                    <option value="restaurants">Restaurants</option>
+                </select>
+                <div>{errors.category}</div>
+                <br/>
 
-            <label htmlFor="notes">Notes</label>
-            <textarea 
-                id="notes" 
-                name="notes"
-                value={formData.notes}
-                onChange={handleChange}></textarea>
-            <br/>
+                <label htmlFor="notes">Notes</label>
+                <textarea 
+                    id="notes" 
+                    name="notes"
+                    value={formData.notes}
+                    onChange={handleChange}></textarea>
+                <br/>
 
-            <label htmlFor="date">Date</label>
-            <input 
-                type="date"
-                id="date"
-                name="date"
-                value={formData.date}
-                onChange={handleChange}/>
-            <div>{errors.date}</div>            
-            <br/>
-            <button className="form--submit">Submit</button>
+                <label htmlFor="date">Date</label>
+                <input 
+                    type="date"
+                    id="date"
+                    name="date"
+                    value={formData.date}
+                    onChange={handleChange}/>
+                <div>{errors.date}</div>            
+                <br/>
+                <button className="form--submit">Submit</button>
 
-        </form>
+            </form>
+        </>
     )
 }
