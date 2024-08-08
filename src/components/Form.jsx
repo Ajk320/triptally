@@ -1,6 +1,6 @@
 import React from "react"
-import Navbar from "./Navbar";
-import { useNavigate } from "react-router-dom";
+import Navbar from "./Navbar"
+import { useNavigate } from "react-router-dom"
 
 export default function Form(){
     const [formData, setFormData] = React.useState({
@@ -38,15 +38,16 @@ export default function Form(){
     }
 
     function handleSubmit(event){
-        event.preventDefault()
+        event.preventDefault();
+        const formErrors = validateForm(formData);
+        setErrors(formErrors);
 
-        setErrors(validateForm(formData))
-        console.log(formData)
-        const newItems = [...items, formData]
-        setItems(newItems)
-        localStorage.setItem('items', JSON.stringify(newItems));
-        navigate("/expenses")
-
+        if(Object.keys(formErrors).length=== 0){
+            const newItems = [...items, formData];
+            setItems(newItems);
+            localStorage.setItem('items', JSON.stringify(newItems));
+            navigate("/");
+        }
     }
 
     function validateForm(data){
