@@ -9,10 +9,19 @@ export default function ExpenseList(){
     const [errors, setErrors] = React.useState({});
 
     React.useEffect(()=>{
-        const savedItems = JSON.parse(localStorage.getItem("items"));
-        if(savedItems){
-            setItems(savedItems);
-        }
+        // const savedItems = JSON.parse(localStorage.getItem("items"));
+        // if(savedItems){
+        //     setItems(savedItems);
+        // }
+        const apiUrl = `http://localhost:8000/expenses`
+        fetch(apiUrl,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => setItems(data))
     },[]);
 
     function handleDelete(index){
@@ -120,9 +129,9 @@ export default function ExpenseList(){
                 <ul>
                 {items.map((item, index) =>(
                     <li key={index}>
-                        <strong>Expense:</strong> {item.expense} <br/>
-                        <strong>Category:</strong> {item.category} <br/>
-                        <strong>Notes:</strong> {item.notes} <br/>
+                        <strong>Expense:</strong> {item.amount} <br/>
+                        <strong>Category:</strong> {item.expense_type_id} <br/>
+                        <strong>Notes:</strong> {item.description} <br/>
                         <strong>Date:</strong> {item.date} <br/>
                         <button onClick={()=>handleEdit(index)}>Edit</button>
                         <button onClick={()=>handleDelete(index)}>Delete</button>
@@ -133,3 +142,23 @@ export default function ExpenseList(){
         </>
     )
 }
+
+// fetch("http://localhost:8000/expenses", {
+//     "headers": {
+//       "accept": "application/json",
+//       "accept-language": "en-US,en",
+//       "sec-ch-ua": "\"Not)A;Brand\";v=\"99\", \"Brave\";v=\"127\", \"Chromium\";v=\"127\"",
+//       "sec-ch-ua-mobile": "?0",
+//       "sec-ch-ua-platform": "\"Windows\"",
+//       "sec-fetch-dest": "empty",
+//       "sec-fetch-mode": "cors",
+//       "sec-fetch-site": "same-origin",
+//       "sec-gpc": "1"
+//     },
+//     "referrer": "http://localhost:8000/docs",
+//     "referrerPolicy": "strict-origin-when-cross-origin",
+//     "body": null,
+//     "method": "GET",
+//     "mode": "cors",
+//     "credentials": "omit"
+//   });

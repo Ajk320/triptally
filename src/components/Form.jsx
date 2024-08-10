@@ -12,17 +12,28 @@ export default function Form(){
 
     const [errors, setErrors] = React.useState({});
 
-    const[items, setItems] = React.useState([]);
-
     const navigate = useNavigate();
 
-    React.useEffect(()=>{
-        //load item into local when component mounts
-        const savedItems = JSON.parse(localStorage.getItem('items'));
-        if(savedItems){
-            setItems(savedItems)
-        }
-    }, []);
+    const[items, setItems] = React.useState([]);
+
+    
+
+    // React.useEffect(()=>{
+    //     // const savedItems = JSON.parse(localStorage.getItem('items'));
+    //     // if(savedItems){
+    //     //     setItems(savedItems)
+    //     // }
+    //     const apiUrl = `http://localhost:8000/expenses`
+    //     fetch(apiUrl,{
+    //         method: 'GET',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         }
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => setItems(data))
+        
+    // }, []);
 
 
    
@@ -43,11 +54,46 @@ export default function Form(){
         setErrors(formErrors);
 
         if(Object.keys(formErrors).length=== 0){
-            const newItems = [...items, formData];
-            setItems(newItems);
-            localStorage.setItem('items', JSON.stringify(newItems));
-            navigate("/");
+            let UUID = "";
+            const apiUrl1 = `http://localhost:8000/expense_types`;
+            const requestBody2 = {  
+                "name" : formData.category
+            }
+            fetch(apiUrl1,{
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestBody2)
+            })
+            .then(response => response.json())
+            .then(data =>{
+                UUID = data.id;
+                const apiUrl = `http://localhost:8000/expenses`
+                const requestBody = {
+                "amount": formData.expense,
+                "date": formData.date,
+                "description": formData.notes,
+                "expense_type_id": UUID
+            };
+            return fetch(apiUrl,{
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestBody),
+            })
+
+            })
+
+            .then(response=> response.json())
+            .then(newItem=>{
+                setItems(prevItem => [...prevItem, newItem]);
+                navigate("/")
+            })
+            .catch(error=>console.error(error));
         }
+
     }
 
     function validateForm(data){
@@ -117,3 +163,27 @@ export default function Form(){
         </>
     )
 }
+
+
+// if(Object.keys(formErrors).length=== 0){
+//     const apiUrl = `http://localhost:8000/api/expenses`
+//     const requestBody = {
+//         expense : formData.expense,
+//         category : formData.category,
+//         notes : formData.notes,
+//         date : formData.date
+//     };
+//     fetch(apiUrl,{
+//         method: 'POST',
+//         headers: {
+//             "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(requestBody),
+//     })
+//     .then(response=> response.json())
+//     .then(newItem=>{
+//         setItems(prevItem => [...prevItem, newItem]);
+//         navigate("/")
+//     })
+//     .catch(error=>console.error(error));
+// }
