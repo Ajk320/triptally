@@ -17,22 +17,40 @@ export default function ExpenseList(){
         fetch(apiUrl,{
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json', 
             }
         })
         .then(response => response.json())
         .then(data => setItems(data))
     },[]);
+    console.log(items)
 
-    function handleDelete(index){
-        const newItems = [...items];
-        newItems.splice(index, 1);
-        setItems(newItems);
-        localStorage.setItem("items",JSON.stringify(newItems));
+    function handleDelete(id){
+        // const newItems = [...items];
+        // newItems.splice(index, 1);
+        // setItems(newItems);
+        // localStorage.setItem("items",JSON.stringify(newItems));
+        const apiUrl = `http://localhost:8000/expenses/${id}`
+        fetch(apiUrl,{
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                }
+        
+        })
+        .then(response=>{
+            if(response.ok){
+                setItems(prevItems => prevItems.filter(item=> item.id !== id))
+            }
+            else{
+                console.error("failed to delete")
+            }
+        })
+
     }
     function handleEdit(index){
-        setEditingIndex(index);
-        setEditingitem(items[index]);
+        // setEditingIndex(index);
+        // setEditingitem(items[index]);
     }
 
     function handleEditChange(event){
@@ -49,11 +67,11 @@ export default function ExpenseList(){
         const formErrors = validateForm(editingItem);
         setErrors(formErrors);
         if(Object.keys(formErrors).length=== 0){
-            const newItems = [...items];
-            newItems[editingIndex] = editingItem;
-            setItems(newItems);
-            localStorage.setItem('items', JSON.stringify(newItems));
-            setEditingIndex(null)
+            // const newItems = [...items];
+            // newItems[editingIndex] = editingItem;
+            // setItems(newItems);
+            // localStorage.setItem('items', JSON.stringify(newItems));
+            // setEditingIndex(null)
             navigate("/");
         }
 
@@ -127,14 +145,14 @@ export default function ExpenseList(){
                 </form>
             ):(
                 <ul>
-                {items.map((item, index) =>(
-                    <li key={index}>
+                {items.map((item) =>(
+                    <li key={item.id}>
                         <strong>Expense:</strong> {item.amount} <br/>
                         <strong>Category:</strong> {item.expense_type_id} <br/>
                         <strong>Notes:</strong> {item.description} <br/>
                         <strong>Date:</strong> {item.date} <br/>
-                        <button onClick={()=>handleEdit(index)}>Edit</button>
-                        <button onClick={()=>handleDelete(index)}>Delete</button>
+                        <button onClick={()=>handleEdit(item.id)}>Edit</button>
+                        <button onClick={()=>handleDelete(item.id)}>Delete</button>
                     </li>
                 ))}
             </ul>
