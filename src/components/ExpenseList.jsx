@@ -1,182 +1,180 @@
-import React from "react"
-import { useNavigate } from 'react-router-dom';
+import React from "react";
 
-export default function ExpenseList(){
-    const navigate = useNavigate();
-    const[items, setItems] = React.useState([]);
-    const[editingIndex, setEditingIndex] = React.useState(null);
-    const[editingItem, setEditingitem] = React.useState({expense:"", category:"", notes:"", date:""});
-    const [errors, setErrors] = React.useState({});
 
-    React.useEffect(()=>{
-        // const savedItems = JSON.parse(localStorage.getItem("items"));
-        // if(savedItems){
-        //     setItems(savedItems);
-        // }
-        const apiUrl = `http://localhost:8000/expenses`
-        fetch(apiUrl,{
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json', 
-            }
-        })
-        .then(response => response.json())
-        .then(data => setItems(data))
-    },[]);
-    console.log(items)
+export default function ExpenseList() {
+    
+    const [items, setItems] = React.useState([]);
+    const [categories, setCategories] = React.useState({});
+    const [editingId, setEditingId] = React.useState(null);
+    const [editingForm, setEditingForm] = React.useState({
+        amount: "",
+        expense_type_id: "",
+        description: "",
+        date: ""
+    });
 
-    function handleDelete(id){
-        // const newItems = [...items];
-        // newItems.splice(index, 1);
-        // setItems(newItems);
-        // localStorage.setItem("items",JSON.stringify(newItems));
-        const apiUrl = `http://localhost:8000/expenses/${id}`
-        fetch(apiUrl,{
+    React.useEffect(() => {
+        const fetchExpenses = fetch(`http://localhost:8000/expenses`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch expenses');
+                }
+                return response.json();
+            });
+
+        const fetchCategories = fetch(`http://localhost:8000/expense_types`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch categories');
+                }
+                return response.json();
+            });
+
+        
+        Promise.all([fetchExpenses, fetchCategories])
+            .then(([expensesData, categoriesData]) => {
+                const categoryMap = {};
+                categoriesData.forEach(item => {
+                    categoryMap[item.id] = item.name;
+                });
+
+                setCategories(categoryMap);
+                setItems(expensesData);
+            })
+            .catch(error => console.error(error));
+    }, []);
+    function handleDelete(id) {
+        const apiUrl = `http://localhost:8000/expenses/${id}`;
+        fetch(apiUrl, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                }
-        
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                setItems(prevItems => prevItems.filter(item => item.id !== id));
+            } else {
+                console.error("Failed to delete");
+            }
+        })
+        .catch(error => console.error(error));
+    }
+    function handleEdit(id){
+        setEditingId(id);
+        const item = items.find(i=> i.id === id);
+        setEditingForm({
+            amount: item.amount,
+            expense_type_id : item.expense_type_id,
+            description : item.description,
+            date : item.date
+        });
+    }
+    function handleChange(event){
+        const{name, value} = event.target;
+        setEditingForm(prevForm => ({
+            ...prevForm,
+            [name]: value
+            }));
+    }
+    function handleUpdate(event){
+        event.preventDefault();
+        const apiUrl = `http://localhost:8000/expenses/${editingId}`
+        fetch(apiUrl,{
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(editingForm)
         })
         .then(response=>{
             if(response.ok){
-                setItems(prevItems => prevItems.filter(item=> item.id !== id))
-            }
-            else{
-                console.error("failed to delete")
-            }
-        })
-
-    }
-    function handleEdit(index){
-        // setEditingIndex(index);
-        // setEditingitem(items[index]);
-    }
-
-    function handleEditChange(event){
-        const{name, value} = event.target;
-        setEditingitem(prevFormData=>{
-            return{
-                ...prevFormData,
-                [name]: value
-            }
-        })
-    }   
-    function handleEditSubmit(event){
-        event.preventDefault();
-        const formErrors = validateForm(editingItem);
-        setErrors(formErrors);
-        if(Object.keys(formErrors).length=== 0){
-            // const newItems = [...items];
-            // newItems[editingIndex] = editingItem;
-            // setItems(newItems);
-            // localStorage.setItem('items', JSON.stringify(newItems));
-            // setEditingIndex(null)
-            navigate("/");
+                setItems(prevItems=>{
+                    return prevItems.map(item => item.id == editingId ? {...item, ...editingForm}: item)
+                })
+                setEditingId(null);
         }
-
-    }
-
-    function validateForm(data){
-        const errors = {};
-
-        if(!data.expense.trim()){
-            errors.expense = "Expense is required";
+        else{
+            console.error("Failed to update");
         }
-        
-        if(!data.category.trim()){
-            errors.category = "Select a category";
-        }
-
-        if(!data.date.trim()){
-            errors.date = "Date is required";
-        }
-
-        return errors;
-    }
+    })
+        .catch(error=>console.error(error));
     
+    }
 
-    return(
+    return (
         <>
             <h2>Expense List</h2>
-            {editingIndex!== null?(
-                <form onSubmit={handleEditSubmit}>
-                    <label htmlFor="expense">Expense</label>
-                    <input type="number"
-                            id="expense"
-                            name="expense"
-                            value={editingItem.expense}
-                            onChange={handleEditChange} />
-                    <div>{errors.expense}</div>
-                    <br />
-
-                    <label htmlFor="category">Category</label>
-                    <select 
-                        id="category"
-                        name="category"
-                        value={editingItem.category}
-                        onChange={handleEditChange}>
-                        <option value="">Choose option</option>
-                        <option value="transportation">Transportation</option>
-                        <option value="restaurants">Restaurants</option>
-                    </select>
-                    <div>{errors.category}</div>
-                    <br/>
-
-                    <label htmlFor="notes">Notes</label>
-                    <textarea 
-                        id="notes" 
-                        name="notes"
-                        value={editingItem.notes}
-                        onChange={handleEditChange}></textarea>
-                    <br/>
-
-                    <label htmlFor="date">Date</label>
-                    <input 
-                        type="date"
-                        id="date"
-                        name="date"
-                        value={editingItem.date}
-                        onChange={handleEditChange}/>
-                    <div>{errors.date}</div>            
-                    <br/>
-                    <button className="form--submit">Submit</button>
-
-                </form>
-            ):(
-                <ul>
-                {items.map((item) =>(
+            <ul>
+                {items.map((item) => (
                     <li key={item.id}>
-                        <strong>Expense:</strong> {item.amount} <br/>
-                        <strong>Category:</strong> {item.expense_type_id} <br/>
-                        <strong>Notes:</strong> {item.description} <br/>
-                        <strong>Date:</strong> {item.date} <br/>
-                        <button onClick={()=>handleEdit(item.id)}>Edit</button>
-                        <button onClick={()=>handleDelete(item.id)}>Delete</button>
+                        {editingId === item.id ? (
+                            <form onSubmit={handleUpdate}>
+                                <label>
+                                    Expense:
+                                    <input
+                                        type="number"
+                                        name="amount"
+                                        value={editingForm.amount}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </label>
+                                <br />  
+                                <label>
+                                    Category:
+                                    <select
+                                        name="expense_type_id"
+                                        value={editingForm.expense_type_id}
+                                        onChange={handleChange}
+                                        required
+                                    >
+                                        {Object.entries(categories).map(([id, name]) => (
+                                            <option key={id} value={id}>
+                                                {name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </label>
+                                <br />
+                                <label>
+                                    Notes:
+                                    <input
+                                        type="text"
+                                        name="description"
+                                        value={editingForm.description}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </label>
+                                <br />
+                                <label>
+                                    Date:
+                                    <input
+                                        type="date"
+                                        name="date"
+                                        value={editingForm.date}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </label>
+                                <br />
+                                <button type="submit">Save</button>
+                                <button onClick={() => setEditingId(null)}>Cancel</button>
+                            </form>
+                        ) : (
+                            <>
+                                <strong>Expense:</strong> {item.amount} <br />
+                                <strong>Category:</strong> {categories[item.expense_type_id]} <br />
+                                <strong>Notes:</strong> {item.description} <br />
+                                <strong>Date:</strong> {item.date} <br />
+                                <button onClick={() => handleEdit(item.id)}>Edit</button>
+                                <button onClick={() => handleDelete(item.id)}>Delete</button>
+                            </>
+                        )}
                     </li>
                 ))}
             </ul>
-            )}
         </>
-    )
+    );
 }
-
-// fetch("http://localhost:8000/expenses", {
-//     "headers": {
-//       "accept": "application/json",
-//       "accept-language": "en-US,en",
-//       "sec-ch-ua": "\"Not)A;Brand\";v=\"99\", \"Brave\";v=\"127\", \"Chromium\";v=\"127\"",
-//       "sec-ch-ua-mobile": "?0",
-//       "sec-ch-ua-platform": "\"Windows\"",
-//       "sec-fetch-dest": "empty",
-//       "sec-fetch-mode": "cors",
-//       "sec-fetch-site": "same-origin",
-//       "sec-gpc": "1"
-//     },
-//     "referrer": "http://localhost:8000/docs",
-//     "referrerPolicy": "strict-origin-when-cross-origin",
-//     "body": null,
-//     "method": "GET",
-//     "mode": "cors",
-//     "credentials": "omit"
-//   });

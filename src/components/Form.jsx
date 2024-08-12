@@ -14,8 +14,9 @@ export default function Form(){
 
     const navigate = useNavigate();
 
-    const[items, setItems] = React.useState([]);
+    // const[items, setItems] = React.useState([]);
 
+    // const [categories, setCategories] = React.useState({});
     
 
     // React.useEffect(()=>{
@@ -23,7 +24,7 @@ export default function Form(){
     //     // if(savedItems){
     //     //     setItems(savedItems)
     //     // }
-    //     const apiUrl = `http://localhost:8000/expenses`
+    //     const apiUrl = `http://localhost:8000/expense_types`
     //     fetch(apiUrl,{
     //         method: 'GET',
     //         headers: {
@@ -31,7 +32,16 @@ export default function Form(){
     //         }
     //     })
     //     .then(response => response.json())
-    //     .then(data => setItems(data))
+    //     .then(data => {
+    //         const categoryMap = {};
+    //         data.forEach(item =>{
+    //             if(!categoryMap[item.name]){
+    //                 categoryMap[item.name] = item.id;
+    //             }
+    //         });
+    //         setCategories(categoryMap);
+    //     })
+    //     .catch(error => console.error(error));
         
     // }, []);
 
