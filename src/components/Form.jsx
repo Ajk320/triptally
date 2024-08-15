@@ -14,7 +14,7 @@ export default function Form(){
 
     const navigate = useNavigate();
 
-    // const[items, setItems] = React.useState([]);
+     const[items, setItems] = React.useState([]);
 
     // const [categories, setCategories] = React.useState({});
     
