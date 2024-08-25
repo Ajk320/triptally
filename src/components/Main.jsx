@@ -9,14 +9,15 @@ export default function Main(){
         navigate("/form")
     };
         return(
-        <>
+        <div className="main">
             <Navbar/>
             <div className="main-content">
-                <h1>Enter the expense</h1>
-                <button className="add-expense-button"
-                        onClick={handleButtonClick}>+</button>
+                <ExpenseList/> 
+                <div className="add-expense-button-class">
+                    <button className="add-expense-button"
+                            onClick={handleButtonClick}>+</button>
+                </div>
             </div>
-            <ExpenseList/>
-        </>
+        </div>
     )
 }

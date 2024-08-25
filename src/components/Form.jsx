@@ -14,39 +14,7 @@ export default function Form(){
 
     const navigate = useNavigate();
 
-     const[items, setItems] = React.useState([]);
-
-    // const [categories, setCategories] = React.useState({});
-    
-
-    // React.useEffect(()=>{
-    //     // const savedItems = JSON.parse(localStorage.getItem('items'));
-    //     // if(savedItems){
-    //     //     setItems(savedItems)
-    //     // }
-    //     const apiUrl = `http://localhost:8000/expense_types`
-    //     fetch(apiUrl,{
-    //         method: 'GET',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         }
-    //     })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         const categoryMap = {};
-    //         data.forEach(item =>{
-    //             if(!categoryMap[item.name]){
-    //                 categoryMap[item.name] = item.id;
-    //             }
-    //         });
-    //         setCategories(categoryMap);
-    //     })
-    //     .catch(error => console.error(error));
-        
-    // }, []);
-
-
-   
+    const[items, setItems] = React.useState([]);
 
     function handleChange(event){
         const{name, value} = event.target
@@ -98,9 +66,12 @@ export default function Form(){
 
             .then(response=> response.json())
             .then(newItem=>{
-                setItems(prevItem => [...prevItem, newItem]);
-                navigate("/")
-            })
+                setItems(prevItem=>[...prevItem, newItem])
+                navigate("/");
+            }
+                
+                
+            )
             .catch(error=>console.error(error));
         }
 

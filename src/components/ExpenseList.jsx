@@ -39,7 +39,16 @@ export default function ExpenseList() {
                 });
 
                 setCategories(categoryMap);
-                setItems(expensesData);
+                const modifiedExpensesData = expensesData.map(expense=>{
+                        let newDate = expense.date.slice(0,10);
+                        newDate = `${newDate.slice(8)}-${newDate.slice(5,7)}-${newDate.slice(0,4)}`
+                    return{
+                        ...expense,
+                        date : newDate
+                    }
+                })
+                setItems(modifiedExpensesData);
+                
             })
             .catch(error => console.error(error));
     }, []);
