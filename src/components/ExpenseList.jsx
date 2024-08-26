@@ -1,4 +1,6 @@
 import React from "react";
+import ExpenseItem from "./ExpenseItem";
+import ExpenseEditForm from "./ExpenseEditForm";
 
 
 export default function ExpenseList() {
@@ -29,7 +31,7 @@ export default function ExpenseList() {
                 }
                 return response.json();
             });
-
+            
         
         Promise.all([fetchExpenses, fetchCategories])
             .then(([expensesData, categoriesData]) => {
@@ -40,11 +42,11 @@ export default function ExpenseList() {
 
                 setCategories(categoryMap);
                 const modifiedExpensesData = expensesData.map(expense=>{
-                        let newDate = expense.date.slice(0,10);
-                        newDate = `${newDate.slice(8)}-${newDate.slice(5,7)}-${newDate.slice(0,4)}`
+                        
                     return{
                         ...expense,
-                        date : newDate
+
+                         date : expense.date.slice(0,10)
                     }
                 })
                 setItems(modifiedExpensesData);
@@ -118,68 +120,74 @@ export default function ExpenseList() {
                 {items.map((item) => (
                     <li key={item.id}>
                         {editingId === item.id ? (
-                            <form onSubmit={handleUpdate}>
-                                <label>
-                                    Expense:
-                                    <input
-                                        type="number"
-                                        name="amount"
-                                        value={editingForm.amount}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </label>
-                                <br />  
-                                <label>
-                                    Category:
-                                    <select
-                                        name="expense_type_id"
-                                        value={editingForm.expense_type_id}
-                                        onChange={handleChange}
-                                        required
-                                    >
-                                        {Object.entries(categories).map(([id, name]) => (
-                                            <option key={id} value={id}>
-                                                {name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </label>
-                                <br />
-                                <label>
-                                    Notes:
-                                    <input
-                                        type="text"
-                                        name="description"
-                                        value={editingForm.description}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </label>
-                                <br />
-                                <label>
-                                    Date:
-                                    <input
-                                        type="date"
-                                        name="date"
-                                        value={editingForm.date}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </label>
-                                <br />
-                                <button type="submit">Save</button>
-                                <button onClick={() => setEditingId(null)}>Cancel</button>
-                            </form>
+                            // <form onSubmit={handleUpdate}>
+                            //     <label>
+                            //         Expense:
+                            //         <input
+                            //             type="number"
+                            //             name="amount"
+                            //             value={editingForm.amount}
+                            //             onChange={handleChange}
+                            //             required
+                            //         />
+                            //     </label>
+                            //     <br />  
+                            //     <label>
+                            //         Category:
+                            //         <select
+                            //             name="expense_type_id"
+                            //             value={editingForm.expense_type_id}
+                            //             onChange={handleChange}
+                            //             required
+                            //         >
+                            //             {Object.entries(categories).map(([id, name]) => (
+                            //                 <option key={id} value={id}>
+                            //                     {name}
+                            //                 </option>
+                            //             ))}
+                            //         </select>
+                            //     </label>
+                            //     <br />
+                            //     <label>
+                            //         Notes:
+                            //         <input
+                            //             type="text"
+                            //             name="description"
+                            //             value={editingForm.description}
+                            //             onChange={handleChange}
+                            //             required
+                            //         />
+                            //     </label>
+                            //     <br />
+                            //     <label>
+                            //         Date:
+                            //         <input
+                            //             type="date"
+                            //             name="date"
+                            //             value={editingForm.date}
+                            //             onChange={handleChange}
+                            //             required
+                            //         />
+                            //     </label>
+                            //     <br />
+                            //     <button type="submit">Save</button>
+                            //     <button onClick={() => setEditingId(null)}>Cancel</button>
+                            // </form>
+                            <ExpenseEditForm
+                                handleUpdate={handleUpdate}
+                                editingForm={editingForm}
+                                handleChange={handleChange}
+                                categories={categories}
+                                setEditingId={setEditingId}
+
+                            />
                         ) : (
-                            <>
-                                <strong>Expense:</strong> {item.amount} <br />
-                                <strong>Category:</strong> {categories[item.expense_type_id]} <br />
-                                <strong>Notes:</strong> {item.description} <br />
-                                <strong>Date:</strong> {item.date} <br />
-                                <button onClick={() => handleEdit(item.id)}>Edit</button>
-                                <button onClick={() => handleDelete(item.id)}>Delete</button>
-                            </>
+                            <ExpenseItem
+                                item={item}
+                                categories={categories}
+                                onEdit={handleEdit}
+                                onDelete={handleDelete}
+                            />
                         )}
                     </li>
                 ))}
